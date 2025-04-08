@@ -1,153 +1,132 @@
-import Link from 'next/link'
-import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+const Header = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const linkVariants = {
-    initial: { y: 0 },
-    hover: { 
-      y: -2,
-      transition: {
-        duration: 0.2,
-        ease: "easeOut"
-      }
-    }
-  }
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
 
-  const underlineVariants = {
-    initial: { scaleX: 0 },
-    hover: { 
-      scaleX: 1,
-      transition: {
-        duration: 0.2,
-        ease: "easeOut"
-      }
-    }
-  }
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const navItems = [
+    { name: 'Accueil', href: '#accueil' },
+    { name: 'Qui suis-je', href: '#qui-suis-je' },
+    { name: 'Ostéopathie', href: '#osteopathie' },
+    { name: 'Tarifs', href: '#tarifs' },
+    { name: 'Contact', href: '#contact' },
+  ];
 
   return (
-    <motion.header 
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className="fixed w-full bg-white/90 backdrop-blur-sm shadow-sm z-50"
-    >
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Link href="/" className="text-primary text-lg sm:text-xl font-medium">
-                Stéphane Gerbouin
-              </Link>
-            </motion.div>
-          </div>
-          
-          {/* Desktop menu */}
-          <div className="hidden md:flex items-center space-x-4 lg:space-x-8">
-            {[
-              { href: "/#accueil", label: "Accueil" },
-              { href: "/#qui-suis-je", label: "Qui suis-je ?" },
-              { href: "/#osteopathie", label: "L'Ostéopathie" },
-              { href: "/#seance", label: "Une séance" }
-            ].map((item) => (
-              <motion.div
-                key={item.href}
-                initial="initial"
-                whileHover="hover"
-                className="relative"
-              >
-                <motion.div variants={linkVariants}>
-                  <Link href={item.href} className="text-primary hover:text-primary/90 transition-colors text-sm lg:text-base">
-                    {item.label}
-                  </Link>
-                </motion.div>
-                <motion.div
-                  variants={underlineVariants}
-                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary origin-left"
-                />
-              </motion.div>
-            ))}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Link 
-                href="/rendez-vous" 
-                className="bg-primary text-white px-4 lg:px-6 py-2 lg:py-2.5 rounded-lg hover:bg-primary/90 transition-colors shadow-sm hover:shadow-md text-sm lg:text-base whitespace-nowrap"
-              >
-                Prendre rendez-vous
-              </Link>
-            </motion.div>
-          </div>
+    <header className={`fixed w-full z-50 transition-all duration-300 ${
+      isScrolled ? 'bg-white/90 backdrop-blur-md shadow-md' : 'bg-transparent'
+    }`}>
+      <div className="container">
+        <nav className="flex items-center justify-between h-20">
+          {/* Logo */}
+          <motion.a
+            href="#accueil"
+            className="text-xl font-bold text-gradient hover-lift"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            Patrice ROS
+          </motion.a>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
-            <motion.button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              className="text-primary p-2 -mr-2"
-              aria-label={isMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
-            >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
-              </svg>
-            </motion.button>
-          </div>
-        </div>
-
-        {/* Mobile menu */}
-        {isMenuOpen && (
+          {/* Desktop Navigation */}
           <motion.div 
+            className="hidden md:flex items-center space-x-8"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2 }}
-            className="md:hidden bg-white/95 backdrop-blur-sm border-t border-gray-100"
+            transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <div className="py-3 space-y-0.5">
-              {[
-                { href: "/#accueil", label: "Accueil" },
-                { href: "/#qui-suis-je", label: "Qui suis-je ?" },
-                { href: "/#osteopathie", label: "L'Ostéopathie" },
-                { href: "/#seance", label: "Une séance" }
-              ].map((item) => (
-                <motion.div
-                  key={item.href}
-                  whileHover={{ x: 10 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Link 
-                    href={item.href}
-                    onClick={() => setIsMenuOpen(false)}
-                    className="block px-4 py-2.5 text-primary hover:bg-secondary/50 rounded-md transition-colors"
-                  >
-                    {item.label}
-                  </Link>
-                </motion.div>
-              ))}
-              <motion.div
-                whileHover={{ x: 10 }}
-                transition={{ duration: 0.2 }}
-                className="mt-3 px-4 pb-4"
+            {navItems.map((item, index) => (
+              <motion.a
+                key={item.name}
+                href={item.href}
+                className="text-gray-700 hover:text-blue-600 hover-underline"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 * (index + 1) }}
               >
-                <Link 
-                  href="/rendez-vous"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="block w-full bg-primary text-white py-3 rounded-lg text-center font-medium hover:bg-primary/90 transition-colors shadow-sm"
-                >
-                  Prendre rendez-vous
-                </Link>
-              </motion.div>
-            </div>
+                {item.name}
+              </motion.a>
+            ))}
+            <motion.a
+              href="tel:0652807178"
+              className="btn btn-primary hover-lift"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+            >
+              06 52 80 71 78
+            </motion.a>
           </motion.div>
-        )}
-      </nav>
-    </motion.header>
-  )
-}
+
+          {/* Mobile Menu Button */}
+          <motion.button
+            className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <span className="sr-only">Menu</span>
+            <div className="w-6 h-6 flex flex-col justify-center space-y-1.5">
+              <span className={`block w-6 h-0.5 bg-gray-600 transform transition-transform ${isMobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
+              <span className={`block w-6 h-0.5 bg-gray-600 transition-opacity ${isMobileMenuOpen ? 'opacity-0' : ''}`}></span>
+              <span className={`block w-6 h-0.5 bg-gray-600 transform transition-transform ${isMobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
+            </div>
+          </motion.button>
+        </nav>
+
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              className="md:hidden"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="py-4 space-y-4">
+                {navItems.map((item, index) => (
+                  <motion.a
+                    key={item.name}
+                    href={item.href}
+                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: 0.1 * index }}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {item.name}
+                  </motion.a>
+                ))}
+                <motion.a
+                  href="tel:0652807178"
+                  className="block px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: 0.4 }}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  06 52 80 71 78
+                </motion.a>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </header>
+  );
+};
+
+export default Header;

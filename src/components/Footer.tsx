@@ -71,7 +71,24 @@ export default function Footer() {
         </div>
 
         <div className="mt-8 pt-8 border-t border-white/20 text-center">
-          <p className="text-sm sm:text-base text-white/80">
+          <div className="flex items-center space-x-6">
+            <a href="#accueil" className="text-gray-400 hover:text-white transition-colors text-sm">
+              Accueil
+            </a>
+            <a href="#qui-suis-je" className="text-gray-400 hover:text-white transition-colors text-sm">
+              Qui suis-je
+            </a>
+            <a href="#osteopathie" className="text-gray-400 hover:text-white transition-colors text-sm">
+              Ostéopathie
+            </a>
+            <a href="#tarifs" className="text-gray-400 hover:text-white transition-colors text-sm">
+              Tarifs
+            </a>
+            <a href="#contact" className="text-gray-400 hover:text-white transition-colors text-sm">
+              Contact
+            </a>
+          </div>
+          <p className="text-sm sm:text-base text-white/80 pt-4">
             &copy; {new Date().getFullYear()} Cabinet d'Ostéopathie Stéphane Gerbouin. Tous droits réservés.
           </p>
         </div>
